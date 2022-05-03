@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ article.titre }}
+{% endblock %}
+
+{% block body %}
+
+    <small class="text-muted">Publié le {{ article.dateCreation|date('d/m/Y') }}</small>
+    <small class="text-muted">Ecrit par {{ article.author.login }}</small>
+    <div style="text-align: center;color: #ECE4B7">
+        <h1> {{ article.titre }}</h1>
+    </div>
+
+    <div>
+        <img alt="Image" src="{{ article.image }}" class="avatar rounded avatar-sm" style="width: 15em;">
+        <p style="font-size: 2em;color: #7FB069">{{ article.description }}</p>
+    </div>
+    <h3>Commentaires</h3>
+
+    {% if article.comments|length == 0 %}
+        <p class="text-muted">Aucun commentaire pour le moment. Soyez le premier à donner votre avis !</p>
+    {% endif %}
+
+    <div class="row">
+        {% for comment in article.comments %}
+            <div class="col-md-12">
+                <div class="card mt-2 mb-2">
+                    <div class="card-body">
+                        <p class="card-text"><small class="text-muted">Le {{ comment.dateComment|date("d/m/Y") }} par {{ comment.author }}</small></p>
+                        <p>{{ comment.contenu }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <h3>Partagez votre avis</h3>
+
+        {% for label, messages in app.flashes(['warning', 'danger']) %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {{ form_start(form) }}
+
+{#        {{ form_label(form.contenu, null, {'label_attr': {'class':'form-label'}}) }}#}
+{#        {{ form_widget(form.contenu, {"attr":{'class':'form-control', 'placeholder':"Votre commentaire"}}) }}#}
+
+        {{ form_rest(form) }}
+        <button type="submit" class="btn btn-success mt-2 mb-5">Enregistrer</button>
+        {{ form_end(form) }}
+        {% else %}
+            <h3>Connectez-vous pour pouvoir partager votre avis</h3>
+        {% endif %}
+    </div>
+{% endblock %}
+

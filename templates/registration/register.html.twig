@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+    <div class="col-12 col-sm-8 col-lg-6 fullwidth-split-text "style="width: 500px; margin-left: auto; margin-right: auto;">
+        <div class="col-12 col-lg-8 align-self-center">
+            <div class="text-center mb-5">
+                <h1 class="h2 mb-2">Register</h1>
+                <span>Créez votre compte</span>
+            </div>
+            <form class="mb-4">
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input class="form-control form-control-lg" type="email" name="email" id="signup-email" placeholder="Email Address">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Choose a password</label>
+                    <input class="form-control form-control-lg" type="password" name="password" id="signup-password" placeholder="Enter a password">
+                    <small>At least seven characters with one numeral</small>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-lg btn-success">Create Account</button>
+                </div>
+            </form>
+            <div class="text-center">
+                      <span class="text-small">Already have an account? <a href="login">Log in here</a>
+                      </span>
+            </div>
+        </div>
+        <!--end of col-->
+    </div>
+{% endblock %}

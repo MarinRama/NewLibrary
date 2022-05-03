@@ -1,0 +1,43 @@
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"></use></svg>
+            </a>
+
+            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <li class="nav-item active">
+                    <a class="nav-link px-2 text-secondary {% if app.request.get('_route') == 'accueil' %} active{% endif %}"href="{{ path('accueil') }}">Accueil <span class="sr-only"></span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'liste_categories' %} active{% endif %}"href="{{ path('liste_categories') }}">Categories</a>
+                </li>
+                {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'user_index' %} active{% endif %}"href="{{ path('user_index') }}">Comptes Users</a>
+                </li>
+                {% endif %}
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'show_user' %} active{% endif %}"href="{{ path('show_user', {'id': app.user.id}) }}">Mon Compte</a>
+                    </li>
+                {% endif %}
+
+            </ul>
+
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                <input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+            </form>
+
+            <div class="text-end">
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                    <a class="btn btn-danger me-2" href="{{ path('logout') }}">Déconnexion</a>
+                {% else %}
+                    <a class="btn btn-outline-light me-2 " href="{{ path('login') }}">Login</a>
+                    <a class="btn btn-warning " href="{{ path('register') }}" >Register</a>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</header>
