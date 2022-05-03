@@ -11,6 +11,7 @@
     <tr>
         <img alt="Image" src="{{ user.pictureFilename }}" class="avatar rounded avatar-sm" style="width: 10em;">
     </tr>
+
     <table class="table">
         <tbody>
         <tr>
@@ -40,6 +41,12 @@
         </tr>
         </tbody>
     </table>
+
+    <form method="POST" action="{{ path('upload_test') }}" enctype="multipart/form-data">
+        <input type="file" name="image">
+        <button type="submit" class="btn btn-primary">Upload</button>
+    </form>
+
     {{ include('user/_form.html.twig') }}
 
     <a href="{{ path('editPass_user', {'id': app.user.id}) }}" class="btn btn-secondary">Change Password</a>

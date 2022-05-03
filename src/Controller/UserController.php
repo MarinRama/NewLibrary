@@ -101,6 +101,14 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            //@var UploadedFile $pictureFile
+//            $pictureFile = $form->get('picture')->getData();
+//            if($pictureFile){
+//                $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
+//                $safeFilename = $slugger->
+//            }
+
+
             $datas = $form->getData();
             $userRepository->add($user);
             $manager->persist($user);
@@ -114,6 +122,12 @@ class UserController extends AbstractController
             'user' => $user,
             'form' => $form->createView(),
         ]);
+    }
+
+
+    #[Route('/upload/test', name:'upload_test')]
+    public function temporaryUploadAction(Request $request){
+        dd($request->files->get('image'));
     }
 
     #[Route('/{id}/editPass', name: 'editPass_user', methods: ['GET', 'POST','PUT'])]
