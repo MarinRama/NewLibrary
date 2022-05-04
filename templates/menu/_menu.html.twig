@@ -21,6 +21,9 @@
                     <li class="nav-item">
                         <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'show_user' %} active{% endif %}"href="{{ path('show_user', {'id': app.user.id}) }}">Mon Compte</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'show_user' %} active{% endif %}"href="#{#  { path('show_user', {'id': app.user.id}) }#}">Mes </a>
+                    </li>
                 {% endif %}
 
             </ul>

@@ -21,15 +21,14 @@ class UserType extends AbstractType
             ->add('nom')
             ->add('prenom')
 
-//            ->add('picture', FileType::class, [
+            ->add('pictureFile', FileType::class, [
 //                'label ' => 'Picture (PDF file)',
-//                'mapped' => false,
-//                // make it optional so you don't have to re-upload the PDF file
-//                // every time you edit the Product details
-//                'required' => false,
-//
-//                // unmapped fields can't define their validation using annotations
-//                // in the associated entity, so you can use the PHP constraint classes
+                'mapped' => false,
+                // make it optional so you don't have to re-upload the PDF file
+                'required' => false,
+
+                // unmapped fields can't define their validation using annotations
+                // in the associated entity, so you can use the PHP constraint classes
 //                'constraints' => [
 //                    new File([
 //                        'maxSize' => '1024k',
@@ -40,7 +39,7 @@ class UserType extends AbstractType
 //                        'mimeTypesMessage' => 'Please upload a valid PDF document',
 //                    ])
 //                ],
-//            ])
+            ])
         ;
     }
 

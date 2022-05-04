@@ -8,6 +8,7 @@ use App\Repository\ArticleRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -31,30 +32,6 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userRepository->add($user);
-            $pictureFile = $form->get('picture')->getData();
-
-            // this condition is needed because the 'brochure' field is not required
-            // so the PDF file must be processed only when a file is uploaded
-            if ($pictureFile) {
-                $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $pictureFile->guessExtension();
-
-                // Move the file to the directory where brochures are stored
-                try {
-                    $pictureFile->move(
-                        $this->getParameter('pictures_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
-                // updates the 'pictureFilename' property to store the PDF file name
-                // instead of its contents
-                $user->setBrochureFilename($newFilename);
-            }
 
             return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -77,23 +54,11 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-    // / Accueil affiche les derniers articles
-//    /**
-//     * @Route ("/", name="accueil", methods={"GET"})
-//     */
-//    public function index(ArticleRepository $articleRepository): Response
-//    {
-//        $articles = $articleRepository->findAll();
-//
-//        return $this->render('default/index.html.twig', [
-//            'articles' => $articles
-//        ]);
-//    }
+
 
     #[Route('/{id}/edit', name: 'edit_user', methods: ['GET', 'POST','PUT'])]
     public function edit(Request $request, User $user, UserRepository $userRepository, EntityManagerInterface $manager): Response
     {
-
         if($this->getUser()->getId() != $user->getId()){
             return $this->redirectToRoute('edit_user', ['id' => $this->getUser()->getId()]);
         }
@@ -101,13 +66,21 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            //@var UploadedFile $pictureFile
-//            $pictureFile = $form->get('picture')->getData();
-//            if($pictureFile){
-//                $originalFilename = pathinfo($pictureFile->getClientOriginalName(), PATHINFO_FILENAME);
-//                $safeFilename = $slugger->
-//            }
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form['pictureFile']->getData();
+            if($uploadedFile){
+                $destination = $this->getParameter('pictures_directory');
 
+                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$uploadedFile->guessExtension();
+
+                $uploadedFile->move(
+                    $destination,
+                    $uploadedFile->getClientOriginalName(),
+                    $newFilename
+                );
+                $user->setPictureFilename($newFilename);
+            }
 
             $datas = $form->getData();
             $userRepository->add($user);
@@ -124,16 +97,9 @@ class UserController extends AbstractController
         ]);
     }
 
-
-    #[Route('/upload/test', name:'upload_test')]
-    public function temporaryUploadAction(Request $request){
-        dd($request->files->get('image'));
-    }
-
     #[Route('/{id}/editPass', name: 'editPass_user', methods: ['GET', 'POST','PUT'])]
     public function editPass(Request $request, User $user, UserRepository $userRepository, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher): Response
     {
-
         $u = $this->getUser();
 
         if($u->getId() != $user->getId()){
@@ -157,8 +123,6 @@ class UserController extends AbstractController
                 $this->addFlash('error','Les 2 mots de passe ne sont pas identiques');
             }
         }
-
-
 
         return $this->render('user/editPass.html.twig', [
             'user' => $user,
