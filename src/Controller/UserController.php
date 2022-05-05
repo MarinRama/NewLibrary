@@ -50,7 +50,6 @@ class UserController extends AbstractController
         if($this->getUser()->getId() != $user->getId() && $this->getUser()->getUserIdentifier() != 'admin'){
             return $this->redirectToRoute('show_user', ['id' => $this->getUser()->getId()], Response::HTTP_SEE_OTHER);
         }
-        $article = $articleRepository;
 
         return $this->render('user/show.html.twig', [
             'user' => $user,
@@ -203,5 +202,47 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('show_user_article', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/newArticle', name: 'new_article', methods: ['GET', 'POST'])]
+    public function newArticle(Request $request, User $user, ArticleRepository $articleRepository, EntityManagerInterface $manager): Response
+    {
+        if($this->getUser()->getId() != $user->getId() && $this->getUser()->getUserIdentifier() != 'admin'){
+            return $this->redirectToRoute('new_article', ['id' => $this->getUser()->getId()], Response::HTTP_SEE_OTHER);
+        }
+        $article = new Article();
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $article->setAuthor($this->getUser());
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form['imageFile']->getData();
+            if($uploadedFile){
+                $destination = $this->getParameter('article_pictures_directory');
+
+                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$uploadedFile->guessExtension();
+
+                $uploadedFile->move(
+                    $destination,
+                    $uploadedFile->getClientOriginalName(),
+                    $newFilename
+                );
+                $article->setImage($newFilename);
+
+                $articleRepository->add($article);
+                $manager->persist($article);
+                $manager->flush();
+
+                $this->addFlash('message','New Article add');
+            }
+            return $this->redirectToRoute('show_user_article', ['id' => $this->getUser()->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('user/article/new_article.html.twig', [
+            'article' => $article,
+            'form' => $form,
+        ]);
     }
 }

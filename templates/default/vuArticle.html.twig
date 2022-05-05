@@ -54,8 +54,8 @@
                 <button type="submit" class="btn btn-success mt-2 mb-5">Enregistrer</button>
                 {{ form_end(form) }}
             {% else %}
-                <a href="{{ path('edit_article', {'id': article.id}) }}" class="btn btn-success" >edit</a>
-                <a href="{{ path('delete_article', {'id': article.id}) }}" class="btn btn-success" >delete</a>
+                <a href="{{ path('edit_article', {'id': article.id}) }}" class="btn btn-primary" >edit</a>
+                <a href="{{ path('delete_article', {'id': article.id}) }}" class="btn btn-danger" >delete</a>
             {% endif %}
 
 

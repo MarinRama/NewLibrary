@@ -1,18 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un article{% endblock %}
+{% block title %}Edit article{% endblock %}
 
 {% block body %}
     {% for message in app.flashes('message') %}
         <div class="alert alert-success" role="alert">{{ message }}</div>
     {% endfor %}
-    <h1>
-        {% if app.request.get('_route') == 'ajout_article' %}
-            Ajouter un article
-        {% else %}
-            Modifier l'article
-        {% endif %}
-    </h1>
+    <h1>Edit Article</h1>
     {% if not form.vars.valid %}
         {{ form_start(form, {'attr':{'class':'was-validated mb-5'}}) }}
     {% else %}
@@ -55,7 +49,7 @@
         </div>
 
         {{ form_rest(form) }}
-        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+        <button class="btn btn-success">{{ button_label|default('Save') }}</button>
     {{ form_end(form) }}
 
 

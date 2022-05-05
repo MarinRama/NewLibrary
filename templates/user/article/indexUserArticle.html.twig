@@ -6,7 +6,7 @@
 {% block body %}
     <style>html{margin-top:0 !important;}</style>
     <h1>{{ app.user.login }}'s Articles</h1>
-
+    <a href="{{ path('new_article', {'id': app.user.id}) }}" class="btn btn-secondary" >Add New Article</a>
     <div class="container">
         <div class="row">
             <div class="col">
@@ -55,7 +55,7 @@
                             <td>{{ article.dateCreation|date('d/m/Y ') }}</td>
                             <td>{{ article.dateUpdate|date('d/m/Y ') }}</td>
                             <td>
-                                <a href="{{ path('edit_article', {'id': article.id}) }}" class="btn btn-success">edit</a>
+                                <a href="{{ path('edit_article', {'id': article.id}) }}" class="btn btn-primary">edit</a>
                                 <a href="{{ path('delete_article', {'id': article.id}) }}" class="btn btn-danger">delete</a>
                             </td>
                         </tr>

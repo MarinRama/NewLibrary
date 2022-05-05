@@ -6,6 +6,8 @@
 parameters:
     pictures_directory: '%kernel.project_dir%/public/uploads/user_image'
     article_pictures_directory: '%kernel.project_dir%/public/uploads/article_image'
+    category_pictures_directory: '%kernel.project_dir%/public/uploads/category_image'
+
 #    app.path.product_images: /uploads/images/products
 
 services:
