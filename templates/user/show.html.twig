@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User{% endblock %}
+{% block title %}{{ app.user.login }}'s Account{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <h1>{{ app.user.login }}'s Account</h1>
     <tr>
         <img alt="Image" src="{{ user.pictureFilename }}" class="avatar rounded avatar-sm" style="width: 10em;">
     </tr>

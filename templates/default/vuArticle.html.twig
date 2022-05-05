@@ -35,25 +35,32 @@
         {% endfor %}
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-        <h3>Partagez votre avis</h3>
+            {% if (article.author.id != app.user.id)  %}
+                <h3>Partagez votre avis</h3>
 
-        {% for label, messages in app.flashes(['warning', 'danger']) %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-        {{ form_start(form) }}
+                {% for label, messages in app.flashes(['warning', 'danger']) %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {{ form_start(form) }}
 
-{#        {{ form_label(form.contenu, null, {'label_attr': {'class':'form-label'}}) }}#}
-{#        {{ form_widget(form.contenu, {"attr":{'class':'form-control', 'placeholder':"Votre commentaire"}}) }}#}
+                {{ form_label(form.contenu, null, {'label_attr': {'class':'form-label'}}) }}
+                {{ form_widget(form.contenu, {"attr":{'class':'form-control', 'placeholder':"Votre commentaire"}}) }}
 
-        {{ form_rest(form) }}
-        <button type="submit" class="btn btn-success mt-2 mb-5">Enregistrer</button>
-        {{ form_end(form) }}
-        {% else %}
-            <h3>Connectez-vous pour pouvoir partager votre avis</h3>
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-success mt-2 mb-5">Enregistrer</button>
+                {{ form_end(form) }}
+            {% else %}
+                <a href="{{ path('edit_article', {'id': article.id}) }}" class="btn btn-success" >edit</a>
+                <a href="{{ path('delete_article', {'id': article.id}) }}" class="btn btn-success" >delete</a>
+            {% endif %}
+
+
+                {% else %}
+                    <h3>Connectez-vous pour pouvoir partager votre avis</h3>
         {% endif %}
     </div>
 {% endblock %}

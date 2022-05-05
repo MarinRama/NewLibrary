@@ -43,11 +43,6 @@
                         {% for article in articles %}
                             <tr class="bg-white">
                                 <th scope="row">
-                                    <a class="media align-items-center" href="{# { path('vue_article', {'id':article.id}) }#}"></a>
-                                </th>
-                            </tr>
-                            <tr class="bg-white">
-                                <th scope="row">
                                     <a class="media align-items-center" href="{{ path('vue_article', {'id':article.id}) }}">
                                         <div class="media-body">
                                         </div>

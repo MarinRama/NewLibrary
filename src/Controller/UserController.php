@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
 use App\Entity\User;
+use App\Form\ArticleType;
 use App\Form\UserType;
 use App\Repository\ArticleRepository;
 use App\Repository\UserRepository;
@@ -55,7 +57,6 @@ class UserController extends AbstractController
         ]);
     }
 
-
     #[Route('/{id}/edit', name: 'edit_user', methods: ['GET', 'POST','PUT'])]
     public function edit(Request $request, User $user, UserRepository $userRepository, EntityManagerInterface $manager): Response
     {
@@ -82,7 +83,6 @@ class UserController extends AbstractController
                 $user->setPictureFilename($newFilename);
             }
 
-            $datas = $form->getData();
             $userRepository->add($user);
             $manager->persist($user);
             $manager->flush();
@@ -129,7 +129,6 @@ class UserController extends AbstractController
         ]);
     }
 
-
     #[Route('/{id}', name: 'delete_user', methods: ['POST'])]
     public function delete(Request $request, User $user, UserRepository $userRepository): Response
     {
@@ -138,5 +137,71 @@ class UserController extends AbstractController
         }
 
         return $this->redirectToRoute('user_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    // / affiche les articles de l'User
+    #[Route('/{id}/showUserArticle', name: 'show_user_article', methods: ['GET'])]
+    public function index(ArticleRepository $articleRepository, User $user): Response
+    {
+        if($this->getUser()->getId() != $user->getId() && $this->getUser()->getUserIdentifier() != 'admin'){
+            return $this->redirectToRoute('show_user_article', ['id' => $this->getUser()->getId()], Response::HTTP_SEE_OTHER);
+        }
+        $articles = $articleRepository->findBy([
+            'author' => ['id' => $user->getId()]
+        ]);
+        return $this->render('user/article/indexUserArticle.html.twig', [
+            'articles' => $articles
+        ]);
+    }
+
+    #[Route('/{id}/editArticle', name: 'edit_article', methods: ['GET', 'POST','PUT'])]
+    public function editArticle(Request $request, Article $article, ArticleRepository $articleRepository, EntityManagerInterface $manager): Response
+    {
+        if($this->getUser()->getId() != $article->getAuthor()->getId()){
+            return $this->redirectToRoute('show_user_article', ['id' => $this->getUser()->getId()]);
+        }
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = $form['imageFile']->getData();
+            if($uploadedFile){
+                $destination = $this->getParameter('article_pictures_directory');
+
+                $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $newFilename = $originalFilename.'-'.uniqid().'.'.$uploadedFile->guessExtension();
+
+                $uploadedFile->move(
+                    $destination,
+                    $uploadedFile->getClientOriginalName(),
+                    $newFilename
+                );
+                $article->setImage($newFilename);
+            }
+
+            $datas = $form->getData();
+            $articleRepository->add($article);
+            $manager->persist($article);
+            $manager->flush();
+
+            $this->addFlash('message','Article mis à Jour');
+            return $this->redirectToRoute('edit_article', ['id' => $article->getId()], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user/article/editArticle.html.twig', [
+            'article' => $article,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/{id}', name: 'delete_article', methods: ['POST'])]
+    public function deleteArticle(Request $request, Article $article, User $user, ArticleRepository $articleRepository): Response
+    {
+        if ($this->isCsrfTokenValid('deleteArticle'.$article->getId(), $request->request->get('_token'))) {
+            $articleRepository->remove($article);
+        }
+
+        return $this->redirectToRoute('show_user_article', [], Response::HTTP_SEE_OTHER);
     }
 }

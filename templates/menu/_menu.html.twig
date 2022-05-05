@@ -22,7 +22,7 @@
                         <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'show_user' %} active{% endif %}"href="{{ path('show_user', {'id': app.user.id}) }}">Mon Compte</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'show_user' %} active{% endif %}"href="#{#  { path('show_user', {'id': app.user.id}) }#}">Mes </a>
+                        <a class="nav-link px-2 text-white {% if app.request.get('_route') == 'show_user' %} active{% endif %}"href="{{ path('show_user_article', {'id': app.user.id}) }}">Mes articles</a>
                     </li>
                 {% endif %}
 
@@ -35,6 +35,7 @@
             <div class="text-end">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <a class="btn btn-danger me-2" href="{{ path('logout') }}">Déconnexion</a>
+                    <a>{{ app.user.login }}</a>
                 {% else %}
                     <a class="btn btn-outline-light me-2 " href="{{ path('login') }}">Login</a>
                     <a class="btn btn-warning " href="{{ path('register') }}" >Register</a>

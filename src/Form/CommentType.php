@@ -13,7 +13,9 @@ class CommentType extends AbstractType
     {
         $builder
             ->add('contenu')
-            ->add('dateComment')
+            ->add('dateComment', null, [
+                'widget' => 'single_text'
+            ])
 //            ->add('author')
         ;
     }
