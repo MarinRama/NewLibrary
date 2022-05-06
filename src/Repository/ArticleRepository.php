@@ -3,9 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Article;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,6 +23,20 @@ class ArticleRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Article::class);
+    }
+
+    public function findForPagination(?Category $category = null): Query
+    {
+        $qb = $this->createQueryBuilder('a')
+            ->orderBy('a.dateCreation','DESC');
+
+        if($category){
+            $qb->LeftJoin('a.categories','c')
+                ->where($qb->expr()->eq('c.id',':categoryId'))
+                ->setParameter('categoryId', $category->getId());
+        }
+
+        return $qb->getQuery();
     }
 
     /**

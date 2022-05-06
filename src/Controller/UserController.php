@@ -76,7 +76,6 @@ class UserController extends AbstractController
 
                 $uploadedFile->move(
                     $destination,
-                    $uploadedFile->getClientOriginalName(),
                     $newFilename
                 );
                 $user->setPictureFilename($newFilename);
@@ -173,7 +172,6 @@ class UserController extends AbstractController
 
                 $uploadedFile->move(
                     $destination,
-                    $uploadedFile->getClientOriginalName(),
                     $newFilename
                 );
                 $article->setImage($newFilename);
@@ -223,10 +221,8 @@ class UserController extends AbstractController
 
                 $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $newFilename = $originalFilename.'-'.uniqid().'.'.$uploadedFile->guessExtension();
-
                 $uploadedFile->move(
                     $destination,
-                    $uploadedFile->getClientOriginalName(),
                     $newFilename
                 );
                 $article->setImage($newFilename);

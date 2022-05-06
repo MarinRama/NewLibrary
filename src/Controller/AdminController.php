@@ -53,7 +53,6 @@ class AdminController extends AbstractController
 
                 $uploadedFile->move(
                     $destination,
-                    $uploadedFile->getClientOriginalName(),
                     $newFilename
                 );
                 $category->setImage($newFilename);

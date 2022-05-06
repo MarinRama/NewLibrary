@@ -46,7 +46,7 @@
                                     <a class="media align-items-center" href="{{ path('vue_article', {'id':article.id}) }}">
                                         <div class="media-body">
                                         </div>
-                                        <img alt="Image" src="{{ article.image }}" class="avatar rounded avatar-sm" style="width: 10em;">
+                                        <img alt="Image" src="{{ asset('uploads/article_image/luffy-6273dce99ca50.jpg') }}" class="avatar rounded avatar-sm" style="width: 10em;">
                                     </a>
                                 </th>
                                 <td><span class="h6 mb-0">{{ article.titre }}</span></td>
@@ -65,6 +65,14 @@
             <!--end of col-->
         </div>
         <!--end of row-->
+        <div class="row">
+            <div class="col">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    {{ knp_pagination_render(articles) }}
+                </div>
+            </div>
+        </div>
+
     </div>
 
 {% endblock %}

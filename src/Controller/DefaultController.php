@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
+use App\Service\ArticlesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +22,10 @@ class DefaultController extends AbstractController
     /**
      * @Route ("/", name="accueil", methods={"GET"})
      */
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(ArticlesService $articlesService): Response
     {
-        $articles = $articleRepository->findAll();
         return $this->render('default/index.html.twig', [
-            'articles' => $articles
+            'articles' => $articlesService->getPaginatedArticles()
         ]);
     }
 
